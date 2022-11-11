@@ -1,0 +1,59 @@
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+
+from helpers.elements.ButtonsClick import ButtonsClick
+from helpers.elements.InputTexts import InputTexts
+
+
+class ListProperties:
+    driver = None
+    input_texts = None
+    buttons_click = None
+
+    def __init__(self, driver):
+        self.driver = driver
+        self.input_texts = InputTexts(driver)
+        self.buttons_click = ButtonsClick(driver)
+
+    def fill_list_name(self, list_name):
+        self.input_texts.set_input_value("//input[@name='user_list[name]']", list_name)
+
+    def fill_list_description(self, list_description):
+        self.input_texts.add_input_text("//textarea[@name='user_list[description]']", list_description)
+
+    def check_creation_completion(self):
+        WebDriverWait(self.driver, 15).until(
+            EC.visibility_of_element_located((By.ID, "user-profile-frame")))
+
+    def get_list_name(self):
+        return self.input_texts.get_text_by_xpath("//turbo-frame[@id='user-profile-frame']/*/div/div[1]/*")
+
+    def click_on_list_action(self, class_name, list_action):
+        counter = 0
+        spans = self.driver.find_elements(By.CLASS_NAME, class_name)
+        for span in spans:
+            counter += 1
+            if list_action in span.text:
+                if class_name == "Button-content":
+                    self.driver.execute_script("document.getElementsByClassName('" +
+                                               class_name + "')[" + str(counter - 1) + "].click()")
+                else:
+                    button = self.driver.find_element(By.XPATH, "//*[@class='" +
+                                                      class_name + "'][" + str(counter) + "]/..")
+                    button.click()
+                break
+
+    def check_action_completion(self, popup_headline):
+        WebDriverWait(self.driver, 20).until(
+            EC.invisibility_of_element_located((By.XPATH, "//details-dialog[@aria-label='" + popup_headline + "']")))
+
+    def click_on_user_list(self, user_name, list_name):
+        self.buttons_click.click_on_button_by_xpath("//a[@href='/stars/" + user_name + "/lists/"
+                                                    + list_name.replace(" ", "-").lower() + "']")
+
+    def click_on_edit_list(self):
+        self.buttons_click.click_on_buttons_by_xpath("//summary[@role='button']", "Edit list", "Lists Properties")
+
+    def confirm_deletion(self):
+        self.buttons_click.click_on_buttons_by_xpath("//button[@type='submit']", "Delete", "Lists Properties")
