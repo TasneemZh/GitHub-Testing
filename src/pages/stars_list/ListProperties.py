@@ -56,7 +56,6 @@ class ListProperties:
         self.buttons_click.click_on_button_by_xpath("//button[@aria-label='Dismiss this message']")
 
     def click_on_user_list(self, user_name, list_name):
-        print("//a[@href='/stars/" + user_name + "/lists/" + list_name.replace(" ", "-").lower() + "']")
         self.buttons_click.click_on_button_by_xpath("//a[@href='/stars/" + user_name + "/lists/"
                                                     + list_name.replace(" ", "-").lower() + "']")
 
