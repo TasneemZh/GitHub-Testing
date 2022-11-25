@@ -1,3 +1,4 @@
+from helpers.data_processing import Constants
 from utils.ManageFiles import ManageFiles
 
 
@@ -6,7 +7,7 @@ class DataFormatter:
     def sort_list_by_stars(stars_list, user_id):
         max_stars = []
         manage_files = ManageFiles()
-        file_name = manage_files.get_constant_value("SORTED_FILE_NAME") + "-" + user_id
+        file_name = Constants.SORTED_FILE_NAME + "-" + user_id
         for array in stars_list:
             thousands = array[2].find('k')
             if thousands > 0:

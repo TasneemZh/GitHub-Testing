@@ -5,6 +5,7 @@ from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from utils.ManageFiles import ManageFiles
 
 
 class PublicProfile:
@@ -35,8 +36,19 @@ class PublicProfile:
         edit_button.click()
 
     def upload_profile_image(self, file_name, file_extension):
+        manage_files = ManageFiles()
+        config = manage_files.read_from_json("config")
+        if config["run_command"]:
+            relative_path = "./"
+        else:
+            relative_path = "../../"
         upload_input = self.driver.find_element(By.XPATH, "//input[@type='file']")
-        upload_input.send_keys(os.path.abspath("./resources/profiles/" + file_name + "." + file_extension))
+        if config["run_command"]:
+            upload_input.send_keys(os.path.abspath(
+                relative_path + "resources/profiles/" + file_name + "." + file_extension))
+        else:
+            upload_input.send_keys(os.path.abspath(
+                relative_path + "resources/profiles/" + file_name + "." + file_extension))
 
     def submit_image(self):
         submit_button = self.driver.find_element(By.XPATH, "//button[@name='op']")
@@ -56,7 +68,6 @@ class PublicProfile:
                 self.number_of_tries = self.number_of_tries + 1
                 return None
         except selenium.common.exceptions.TimeoutException:
-            print("No alert of removing the old image appeared")
             WebDriverWait(self.driver, 30).until(
                 EC.visibility_of_element_located((By.ID, "js-flash-container")))
             if self.driver.find_elements(By.XPATH, "//*[@role='alert']"):

@@ -10,7 +10,8 @@ from utils.ManageFiles import ManageFiles
 class OpenBrowser:
     @staticmethod
     def create_driver():
-        config = ManageFiles.read_from_json("config")
+        manage_files = ManageFiles()
+        config = manage_files.read_from_json("config")
         if config["browser"] == "chrome":
             options = webdriver.ChromeOptions()
             if config["headless_mode"]:

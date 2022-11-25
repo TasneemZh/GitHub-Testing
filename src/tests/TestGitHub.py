@@ -9,9 +9,10 @@ from utils.ConfigureProperties import ConfigureProperties
 from utils.ManageFiles import ManageFiles
 from utils.OpenBrowser import OpenBrowser
 from utils.ScreenShot import ScreenShot
+from helpers.data_processing import Constants
 from helpers.data_processing.DataFormatter import DataFormatter
-from helpers.elements.ButtonsClick import ButtonsClick
 from helpers.data_processing.UserData import UserData
+from helpers.elements.ButtonsClick import ButtonsClick
 from pages.homepage.GuestView import GuestView
 from pages.homepage.Home import Home
 from pages.homepage.SignIn import SignIn
@@ -33,7 +34,6 @@ class TestGitHub(TestCase):
     def setUpClass(cls):
         cls.driver = OpenBrowser.create_driver()
         cls.properties = ConfigureProperties.get_properties("app-config.properties")
-        cls.manage_files.read_from_csv("constants", "dictionary")
         cls.home = Home(cls.driver)
         cls.public_profile = PublicProfile(cls.driver)
         cls.screenshot = ScreenShot()
@@ -51,13 +51,13 @@ class TestGitHub(TestCase):
     @pytest.mark.dependency(name="sign_in")
     @allure.severity(allure.severity_level.BLOCKER)
     def test_a_sign_in(self):
-        self.driver.get(self.manage_files.get_constant_value("WEBSITE"))
+        self.driver.get(Constants.WEBSITE)
         self.guest_view.click_on_header_menu("Sign in")
         user_email = self.properties["EMAIL"].data
         self.sign_in.enter_credentials("login_field", user_email)
         self.sign_in.enter_credentials("password", self.properties["PASSWORD"].data)
         self.sign_in.click_on_signin_button("Sign in")
-        self.sign_in.do_manual_verification(self.manage_files.get_constant_value("WEBSITE"))
+        self.sign_in.do_manual_verification(Constants.WEBSITE)
         self.home.click_on_profile("avatar-small")
         self.home.select_from_dropdown_list("Settings")
         self.public_profile.click_on_account_menu("Access settings", "Emails")
@@ -83,7 +83,7 @@ class TestGitHub(TestCase):
         time.sleep(5)
         while upload_result is None and self.public_profile.get_tries_count() < 2:
             self.screenshot.take_screenshot(
-                self.manage_files.get_constant_value("PROFILE_IMAGE_BEFORE") + "_" +
+                Constants.PROFILE_IMAGE_BEFORE + "_" +
                 self.user_data.get_value("test_case_id") + "_" + str(self.public_profile.get_tries_count()), "png")
             self.screenshot.attach_image_to_allure()
             self.public_profile.click_on_edit_profile("avatar rounded-2 avatar-user")
@@ -91,7 +91,7 @@ class TestGitHub(TestCase):
             self.public_profile.submit_image()
             upload_result = self.public_profile.check_action_image_alert("profile picture has been updated")
         self.screenshot.take_screenshot(
-            self.manage_files.get_constant_value("PROFILE_IMAGE_AFTER") + "_" +
+            Constants.PROFILE_IMAGE_AFTER + "_" +
             self.user_data.get_value("test_case_id"), "png")
         self.screenshot.attach_image_to_allure()
         self.assertTrue(upload_result)
@@ -106,7 +106,7 @@ class TestGitHub(TestCase):
                                  list_description, new_list_name, search_term):
         self.user_data.set_data(test_case_id, repository_name, repository_description, list_name,
                                 list_description, new_list_name, search_term)
-        self.home.click_on_website_icon(self.manage_files.get_constant_value("WEBSITE"))
+        self.home.click_on_website_icon(Constants.WEBSITE)
         self.home.determine_repository_visibility("public", False)
         self.home.click_on_action_button("Create a new repository")
         repository_creation = Creation(self.driver)
@@ -176,9 +176,10 @@ class TestGitHub(TestCase):
                              list_description, new_list_name, search_term):
         self.user_data.set_data(test_case_id, repository_name, repository_description, list_name,
                                 list_description, new_list_name, search_term)
-        self.home.scroll_to_the_top()
-        self.home.click_on_profile("avatar-small")
-        self.home.select_from_dropdown_list("Your stars")
+        if test_case_id == "1":
+            self.home.scroll_to_the_top()
+            self.home.click_on_profile("avatar-small")
+            self.home.select_from_dropdown_list("Your stars")
         lists_before = self.stars_list_view.get_lists_number() + 1
         self.stars_list_view.click_on_create_list()
         exp_name = self.user_data.get_value("list_name")
@@ -191,6 +192,8 @@ class TestGitHub(TestCase):
         time.sleep(10)
         self.driver.refresh()
         lists_after = self.stars_list_view.get_lists_number()
+        self.buttons_click.click_hyperlinked_buttons("Stars")
+        self.driver.refresh()
         self.assertEqual(lists_before, lists_after)
         pass
 
@@ -203,17 +206,16 @@ class TestGitHub(TestCase):
                              list_description, new_list_name, search_term):
         self.user_data.set_data(test_case_id, repository_name, repository_description, list_name,
                                 list_description, new_list_name, search_term)
-        self.buttons_click.click_hyperlinked_buttons("Stars")
         self.list_properties.click_on_user_list(self.user_data.get_value('user_name'),
                                                 self.user_data.get_value('list_name'))
         self.list_properties.click_on_edit_list()
         self.list_properties.fill_list_name("")
         exp_name = self.user_data.get_value("new_list_name")
         self.list_properties.fill_list_name(exp_name)
-        time.sleep(10)
         self.list_properties.click_on_list_action("Button-content", "Save list")
         self.list_properties.check_action_completion("Edit list")
         actual_name = self.list_properties.get_list_name()
+        self.buttons_click.click_hyperlinked_buttons("Stars")
         self.assertEqual(exp_name, actual_name)
         pass
 
@@ -305,18 +307,19 @@ class TestGitHub(TestCase):
                            list_description, new_list_name, search_term):
         self.user_data.set_data(test_case_id, repository_name, repository_description, list_name,
                                 list_description, new_list_name, search_term)
-        self.home.click_on_profile("avatar-small")
-        self.home.select_from_dropdown_list("Your stars")
+        if test_case_id == "1":
+            self.home.click_on_profile("avatar-small")
+            self.home.select_from_dropdown_list("Your stars")
+        time.sleep(10)
         lists_before = self.stars_list_view.get_lists_number() - 1
         self.list_properties.click_on_user_list(self.user_data.get_value('user_name'),
                                                 self.user_data.get_value('new_list_name'))
         self.list_properties.click_on_edit_list()
-        time.sleep(10)
         self.list_properties.click_on_list_action("Button-content", "Delete list")
-        time.sleep(10)
         self.list_properties.confirm_deletion()
-        self.list_properties.check_action_completion("Edit list")
+        self.list_properties.close_informative_message()
         lists_after = self.stars_list_view.get_lists_number()
+        self.buttons_click.click_hyperlinked_buttons("Stars")
         self.assertEqual(lists_before, lists_after)
         pass
 

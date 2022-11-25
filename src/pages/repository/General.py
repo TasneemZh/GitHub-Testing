@@ -39,7 +39,6 @@ class General:
         confirmation_button.click()
 
     def click_on_delete_confirmation(self, action_hyperlink):
-        print("//form[@action='" + action_hyperlink + "/settings/delete']/button")
         confirmation_button = WebDriverWait(self.driver, 15).until(
             EC.element_to_be_clickable((By.XPATH, "//form[@action='" + action_hyperlink + "/settings/delete']/button")))
         confirmation_button.click()

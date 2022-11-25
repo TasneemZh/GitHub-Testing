@@ -3,13 +3,21 @@ import os
 import pyautogui
 import allure
 
+from utils.ManageFiles import ManageFiles
+
 
 class ScreenShot:
     image_path = None
     image_extension = None
 
     def take_screenshot(self, image_name, image_extension="png"):
-        self.image_path = "./resources/screenshots/" + image_name + "." + image_extension
+        manage_files = ManageFiles()
+        config = manage_files.read_from_json("config")
+        if config["run_command"]:
+            relative_path = "./"
+        else:
+            relative_path = "../../"
+        self.image_path = relative_path + "resources/screenshots/" + image_name + "." + image_extension
         self.image_extension = image_extension
         pyautogui.screenshot(os.path.abspath(self.image_path))
 

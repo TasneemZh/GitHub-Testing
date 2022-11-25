@@ -1,0 +1,5 @@
+WEBSITE = "https://github.com/"
+OUTPUT_FILE_NAME = "search-results"
+SORTED_FILE_NAME = "sorted-results"
+PROFILE_IMAGE_BEFORE = "old_profile_image"
+PROFILE_IMAGE_AFTER = "profile_image_updated"

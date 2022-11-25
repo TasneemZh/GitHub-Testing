@@ -15,7 +15,9 @@ In the *app-config.properties* file, write the email and password in the followi
 > 
 > PASSWORD=xxxxxx
 
-Run the project by the following command:
+Mark *src* folder as the **Sources Root**.
+
+Run the project by the following command and check that *run_command* in config.json is set to *true*:
 
 `pytest -v -s --alluredir=.\allure-results .\src\tests\TestGitHub.py  
 `
@@ -23,6 +25,8 @@ Run the project by the following command:
 Run Allure server by the following command:
 
 `allure serve`
+
+To run the project using the IDE tools, right-click on the TestGitHub.py and click on *Run* after setting the *run_command* in config.json to *false*
 
 ## Warning
 

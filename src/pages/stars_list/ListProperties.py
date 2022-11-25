@@ -31,6 +31,8 @@ class ListProperties:
 
     def click_on_list_action(self, class_name, list_action):
         counter = 0
+        WebDriverWait(self.driver, 20).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, class_name)))
         spans = self.driver.find_elements(By.CLASS_NAME, class_name)
         for span in spans:
             counter += 1
@@ -48,11 +50,19 @@ class ListProperties:
         WebDriverWait(self.driver, 20).until(
             EC.invisibility_of_element_located((By.XPATH, "//details-dialog[@aria-label='" + popup_headline + "']")))
 
+    def close_informative_message(self):
+        WebDriverWait(self.driver, 20).until(
+            EC.visibility_of_element_located((By.XPATH, "//div[@role='alert']")))
+        self.buttons_click.click_on_button_by_xpath("//button[@aria-label='Dismiss this message']")
+
     def click_on_user_list(self, user_name, list_name):
+        print("//a[@href='/stars/" + user_name + "/lists/" + list_name.replace(" ", "-").lower() + "']")
         self.buttons_click.click_on_button_by_xpath("//a[@href='/stars/" + user_name + "/lists/"
                                                     + list_name.replace(" ", "-").lower() + "']")
 
     def click_on_edit_list(self):
+        WebDriverWait(self.driver, 30).until(
+            EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Explore repositories")))
         self.buttons_click.click_on_buttons_by_xpath("//summary[@role='button']", "Edit list", "Lists Properties")
 
     def confirm_deletion(self):

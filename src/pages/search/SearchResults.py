@@ -1,5 +1,6 @@
 from selenium.webdriver.common.by import By
 
+from helpers.data_processing import Constants
 from utils.ManageFiles import ManageFiles
 from helpers.elements.InputTexts import InputTexts
 
@@ -25,7 +26,7 @@ class SearchResults:
 
     def star_valid_results(self, search_term, test_case_id):
         python_repo_count = 0
-        file_name = self.manage_files.get_constant_value("OUTPUT_FILE_NAME") + "-" + test_case_id
+        file_name = Constants.OUTPUT_FILE_NAME + "-" + test_case_id
         self.manage_files.open_writer_csv(file_name, ["Repository Name", "Project Name", "Stars Count"])
         search_term_length = len(search_term)
         headlines = self.driver.find_elements(By.PARTIAL_LINK_TEXT, search_term)
@@ -47,11 +48,11 @@ class SearchResults:
         return python_repo_count
 
     def read_search_results_file(self, test_case_id):
-        file_name = self.manage_files.get_constant_value("OUTPUT_FILE_NAME") + "-" + test_case_id
+        file_name = Constants.OUTPUT_FILE_NAME + "-" + test_case_id
         stars_list = self.manage_files.read_from_csv(file_name, "list")
         return len(stars_list)
 
     def get_stars_list(self, test_case_id):
-        file_name = self.manage_files.get_constant_value("OUTPUT_FILE_NAME") + "-" + test_case_id
+        file_name = Constants.OUTPUT_FILE_NAME + "-" + test_case_id
         stars_list = self.manage_files.read_from_csv(file_name, "list")
         return stars_list
