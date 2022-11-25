@@ -29,6 +29,7 @@ from utils.ScreenShot import ScreenShot
 @ddt
 class TestGitHub(TestCase):
     manage_files = ManageFiles()
+    error_num = 0
 
     @classmethod
     def setUpClass(cls):
@@ -45,7 +46,6 @@ class TestGitHub(TestCase):
         cls.search_results = SearchResults(cls.driver)
         cls.sign_in = SignIn(cls.driver)
         cls.guest_view = GuestView(cls.driver)
-        cls.error_num = 0
 
     @allure.title("Signing the user into GitHub")
     @allure.description("A test for signing the user into GitHub website successfully using securely store credentials")
@@ -69,11 +69,11 @@ class TestGitHub(TestCase):
             self.user_data.set_value("user_name", user_name)
             self.assertEqual(user_email, actual_email)
             pass
-        except Exception:
+        except Exception as error:
             self.screenshot.take_screenshot(Constants.TESTING_ERROR + "_" + str(self.error_num), "png")
             self.screenshot.attach_image_to_allure()
             self.error_num += 1
-            self.assertFalse(True)
+            self.assertFalse(True, msg=error)
 
     @allure.title("Changing the user profile image")
     @allure.description("A test for changing the user profile image and validating it is successfully updated")
@@ -105,11 +105,11 @@ class TestGitHub(TestCase):
             self.screenshot.attach_image_to_allure()
             self.assertTrue(upload_result)
             pass
-        except Exception:
+        except Exception as error:
             self.screenshot.take_screenshot(Constants.TESTING_ERROR + "_" + str(self.error_num), "png")
             self.screenshot.attach_image_to_allure()
             self.error_num += 1
-            self.assertFalse(True)
+            self.assertFalse(True, msg=error)
 
     @allure.title("Creating a public repository")
     @allure.description("A test for creating a repository with a public visibility and a description")
@@ -135,11 +135,11 @@ class TestGitHub(TestCase):
             actual_repo_name = self.repository_general.get_repository_name(exp_repo_name)
             self.assertEqual(exp_repo_name, actual_repo_name)
             pass
-        except Exception:
+        except Exception as error:
             self.screenshot.take_screenshot(Constants.TESTING_ERROR + "_" + str(self.error_num), "png")
             self.screenshot.attach_image_to_allure()
             self.error_num += 1
-            self.assertFalse(True)
+            self.assertFalse(True, msg=error)
 
     @allure.title("Configuring the repository visibility")
     @allure.description("A test for changing the repository visibility setting from public to private")
@@ -157,11 +157,11 @@ class TestGitHub(TestCase):
             actual_value = self.repository_general.get_visibility_value(exp_value)
             self.assertEqual(exp_value, actual_value)
             pass
-        except Exception:
+        except Exception as error:
             self.screenshot.take_screenshot(Constants.TESTING_ERROR + "_" + str(self.error_num), "png")
             self.screenshot.attach_image_to_allure()
             self.error_num += 1
-            self.assertFalse(True)
+            self.assertFalse(True, msg=error)
 
     @allure.title("Un/starring the repository")
     @allure.description("A test for marking the repository with a star and then removing it")
@@ -194,11 +194,11 @@ class TestGitHub(TestCase):
             stars_after = self.stars_list_view.get_stars_number()
             self.assertEqual(stars_before, stars_after)
             pass
-        except Exception:
+        except Exception as error:
             self.screenshot.take_screenshot(Constants.TESTING_ERROR + "_" + str(self.error_num), "png")
             self.screenshot.attach_image_to_allure()
             self.error_num += 1
-            self.assertFalse(True)
+            self.assertFalse(True, msg=error)
 
     @allure.title("Creating a stars list")
     @allure.description("A test for creating a stars list with a name and description")
@@ -230,11 +230,11 @@ class TestGitHub(TestCase):
             self.driver.refresh()
             self.assertEqual(lists_before, lists_after)
             pass
-        except Exception:
+        except Exception as error:
             self.screenshot.take_screenshot(Constants.TESTING_ERROR + "_" + str(self.error_num), "png")
             self.screenshot.attach_image_to_allure()
             self.error_num += 1
-            self.assertFalse(True)
+            self.assertFalse(True, msg=error)
 
     @allure.title("Renaming the stars list")
     @allure.description("A test for renaming the stars list by editing the list name")
@@ -258,11 +258,11 @@ class TestGitHub(TestCase):
             self.buttons_click.click_hyperlinked_buttons("Stars")
             self.assertEqual(exp_name, actual_name)
             pass
-        except Exception:
+        except Exception as error:
             self.screenshot.take_screenshot(Constants.TESTING_ERROR + "_" + str(self.error_num), "png")
             self.screenshot.attach_image_to_allure()
             self.error_num += 1
-            self.assertFalse(True)
+            self.assertFalse(True, msg=error)
 
     @allure.title("Searching for a term")
     @allure.description("A test for searching for a specific term and getting the results that match into a csv file")
@@ -283,11 +283,11 @@ class TestGitHub(TestCase):
             actual_result = self.search_results.read_search_results_file(self.user_data.get_value("test_case_id"))
             self.assertEqual(exp_result, actual_result)
             pass
-        except Exception:
+        except Exception as error:
             self.screenshot.take_screenshot(Constants.TESTING_ERROR + "_" + str(self.error_num), "png")
             self.screenshot.attach_image_to_allure()
             self.error_num += 1
-            self.assertFalse(True)
+            self.assertFalse(True, msg=error)
 
     @allure.title("Sorting the search results")
     @allure.description("A test for sorting the csv file that has the search results that matched the search term")
@@ -303,11 +303,11 @@ class TestGitHub(TestCase):
             actual_result = DataFormatter.sort_list_by_stars(exp_result, self.user_data.get_value("test_case_id"))
             self.assertEqual(len(exp_result), len(actual_result))
             pass
-        except Exception:
+        except Exception as error:
             self.screenshot.take_screenshot(Constants.TESTING_ERROR + "_" + str(self.error_num), "png")
             self.screenshot.attach_image_to_allure()
             self.error_num += 1
-            self.assertFalse(True)
+            self.assertFalse(True, msg=error)
 
     @allure.title("Deleting the repository")
     @allure.description("A test for deleting the created repositories by going through the repository settings")
@@ -341,11 +341,11 @@ class TestGitHub(TestCase):
                     get_expected = False
             self.assertEqual(exp_result, number_of_repos)
             pass
-        except Exception:
+        except Exception as error:
             self.screenshot.take_screenshot(Constants.TESTING_ERROR + "_" + str(self.error_num), "png")
             self.screenshot.attach_image_to_allure()
             self.error_num += 1
-            self.assertFalse(True)
+            self.assertFalse(True, msg=error)
 
     @allure.title("Removing the user profile image")
     @allure.description("A test for removing the user profile image successfully")
@@ -361,11 +361,11 @@ class TestGitHub(TestCase):
             remove_result = self.public_profile.check_action_image_alert("profile picture has been reset")
             self.assertTrue(remove_result)
             pass
-        except Exception:
+        except Exception as error:
             self.screenshot.take_screenshot(Constants.TESTING_ERROR + "_" + str(self.error_num), "png")
             self.screenshot.attach_image_to_allure()
             self.error_num += 1
-            self.assertFalse(True)
+            self.assertFalse(True, msg=error)
 
     @allure.title("Deleting the stars list")
     @allure.description("A test for deleting the stars list by going through the edit settings")
@@ -392,11 +392,11 @@ class TestGitHub(TestCase):
             self.buttons_click.click_hyperlinked_buttons("Stars")
             self.assertEqual(lists_before, lists_after)
             pass
-        except Exception:
+        except Exception as error:
             self.screenshot.take_screenshot(Constants.TESTING_ERROR + "_" + str(self.error_num), "png")
             self.screenshot.attach_image_to_allure()
             self.error_num += 1
-            self.assertFalse(True)
+            self.assertFalse(True, msg=error)
 
     @allure.title("Signing out the user")
     @allure.description("A test for signing the user out and validating the user is on the guest view page")
@@ -408,11 +408,11 @@ class TestGitHub(TestCase):
             sign_in_exist = self.guest_view.check_sign_in_button("Sign in")
             self.assertTrue(sign_in_exist)
             pass
-        except Exception:
+        except Exception as error:
             self.screenshot.take_screenshot(Constants.TESTING_ERROR + "_" + str(self.error_num), "png")
             self.screenshot.attach_image_to_allure()
             self.error_num += 1
-            self.assertFalse(True)
+            self.assertFalse(True, msg=error)
 
     @classmethod
     def tearDownClass(cls):
