@@ -29,7 +29,7 @@ class PublicProfile:
             else:
                 index += 1
         if index >= len(list_items):
-            raise RuntimeError("'" + item_name + "' is not found on the account menu!")
+            raise Exception("'" + item_name + "' is not found on the account menu!")
 
     def click_on_edit_profile(self, class_name):
         edit_button = self.driver.find_element(By.XPATH, "//img[@class='" + class_name + "']/../div")

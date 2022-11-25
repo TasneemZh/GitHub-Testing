@@ -33,5 +33,5 @@ class ScreenShot:
             case "gif":
                 attachment_type = allure.attachment_type.GIF
             case _:
-                raise RuntimeError("'" + self.image_extension + "' is not supported for attachment to Allure!")
+                raise Exception("'" + self.image_extension + "' is not supported for attachment to Allure!")
         allure.attach.file(self.image_path, attachment_type=attachment_type)

@@ -36,4 +36,4 @@ class ButtonsClick:
                 self.driver.execute_script("arguments[0].click()", button)
                 break
         if not is_found:
-            raise RuntimeError("'" + button_subtext + "' is not found on the " + location + "!")
+            raise Exception("'" + button_subtext + "' is not found on the " + location + "!")

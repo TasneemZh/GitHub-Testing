@@ -61,7 +61,7 @@ class General:
                 is_found = True
                 break
         if not is_found:
-            raise RuntimeError("'" + star_action + "' is not found on the " + location + "!")
+            raise Exception("'" + star_action + "' is not found on the " + location + "!")
 
     def check_repository_star(self):
         try:

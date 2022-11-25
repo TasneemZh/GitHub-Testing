@@ -39,7 +39,7 @@ class ManageFiles:
                     for row in reader:
                         input_list.append([row[0], row[1], row[2]])
                 case _:
-                    raise RuntimeError("Unsupported storage type!")
+                    raise Exception("Unsupported storage type!")
             return input_list
 
     def open_writer_csv(self, file_name, headers_name):
